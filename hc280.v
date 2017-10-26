@@ -4,7 +4,7 @@
 // Version:     1
 /* Description: 9 bit parity checker, returns a parity even bit and a parity odd bit
                 */
-                
+`timescale 1ns/100ps             
 module hc280(data_in, pe, po);
     input [8:0] data_in;
     output pe, po;
@@ -17,4 +17,10 @@ module hc280(data_in, pe, po);
     
     assign po = sum[0];
     assign pe = ~sum[0];
+    
+    //17ns prop delay for pe, 20 ns for po
+    specify
+        (data_in *> pe) = (17); //17 time units. Timescale directive must specify 1ns to be one time unit (e.g. `timescale 1ns/100ps)
+        (data_in *> po) = (20); //20ns typical propagation delay @ 25C and Vcc = 5V
+    endspecify
 endmodule
